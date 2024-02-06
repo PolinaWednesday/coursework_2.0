@@ -14,7 +14,7 @@
                         <h4 class="my-0 fw-normal">Всего рассылок в сервисе</h4>
                     </div>
                     <div class="card-body">
-                        <h1 class="card-title pricing-card-title">{{ mail_count }}</h1>
+                        <h1 class="card-title pricing-card-title">{{ mailings_count }}</h1>
                     </div>
                 </div>
             </div>
@@ -24,7 +24,7 @@
                         <h4 class="my-0 fw-normal">Всего активных рассылок</h4>
                     </div>
                     <div class="card-body">
-                        <h1 class="card-title pricing-card-title">{{ active_mail_count }}</h1>
+                        <h1 class="card-title pricing-card-title">{{ active_mailings_count }}</h1>
                     </div>
                 </div>
             </div>
@@ -47,9 +47,9 @@
                 <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
                     <div class="col p-4 d-flex flex-column position-static">
 
-                        <h3 class="mb-0">{{ blog.title }}</h3>
-                        <div class="mb-1 text-muted">{{ blog.public_date }}</div>
-                        <p class="card-text mb-auto">{{ blog.content }}</p>
+                        <h3 class="mb-0">{{ object.title|title }}</h3>
+                        <div class="mb-1 text-muted">{{ object.public_date|content }}</div>
+                        <p class="card-text mb-auto">{{ object.content|content }}</p>
                         <a href="#" class="stretched-link">Читать далее</a>
                     </div>
                     <div class="col-auto d-none d-lg-block">
