@@ -11,9 +11,9 @@ STATUS_CHOICES = [
     ('created', 'created'),
 ]
 INTERVAL_CHOICES = [
-    ('once_a_day', 'once_a_day'),
-    ('once_a_week', 'once_a_week'),
-    ('once_a_month', 'once_a_month'),
+    ('once_a_day', 'ежедневно'),
+    ('once_a_week', 'раз в неделю'),
+    ('once_a_month', 'раз в месяц'),
 ]
 
 

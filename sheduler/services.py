@@ -11,12 +11,12 @@ def my_job():
     weak = timedelta(days=7, hours=0, minutes=0)
     month = timedelta(days=30, hours=0, minutes=0)
 
-    mail = Mail.objects.all().filter(status='Создана') \
-        .filter(is_activated=True) \
+    mailings = Mail.objects.all().filter(status='Создана') \
+        .filter(is_active=True) \
         .filter(next_date__lte=datetime.now(pytz.timezone('Europe/Moscow'))) \
         .filter(end_date__gte=datetime.now(pytz.timezone('Europe/Moscow')))
 
-    for mail in mail:
+    for mail in mailings:
         mail.status = 'Запущена'
         mail.save()
         emails_list = [client.email for client in mail.mail_to.all()]
@@ -34,15 +34,15 @@ def my_job():
         else:
             status = 'Ошибка отправки'
 
-        log = Logs(mailing=mail, status=status)
+        log = Logs(mail=mail, status=status)
         log.save()
 
         if mail.interval == 'ежедневно':
-            mail.next_date = log.last_mail_time + day
+            mail.next_date = log.last_mailing_time + day
         elif mail.interval == 'раз в неделю':
-            mail.next_date = log.last_mail_time + weak
+            mail.next_date = log.last_mailing_time + weak
         elif mail.interval == 'раз в месяц':
-            mail.next_date = log.last_mail_time + month
+            mail.next_date = log.last_mailing_time + month
 
         if mail.next_date < mail.end_date:
             mail.status = 'Создана'
@@ -51,25 +51,25 @@ def my_job():
         mail.save()
 
 
-def get_cache_for_mail():
+def get_cache_for_mailings():
     if settings.CACHE_ENABLED:
-        key = 'mail_count'
-        mail_count = cache.get(key)
-        if mail_count is None:
-            mail_count = Mail.objects.all().count()
-            cache.set(key, mail_count)
+        key = 'mailings_count'
+        mailings_count = cache.get(key)
+        if mailings_count is None:
+            mailings_count = Mail.objects.all().count()
+            cache.set(key, mailings_count)
     else:
-        mail_count = Mail.objects.all().count()
-    return mail_count
+        mailings_count = Mail.objects.all().count()
+    return mailings_count
 
 
-def get_cache_for_active_mail():
+def get_cache_for_active_mailings():
     if settings.CACHE_ENABLED:
         key = 'active_mailings_count'
-        active_mail_count = cache.get(key)
-        if active_mail_count is None:
-            active_mail_count = Mail.objects.filter(is_active=True).count()
-            cache.set(key, active_mail_count)
+        active_mailings_count = cache.get(key)
+        if active_mailings_count is None:
+            active_mailings_count = Mail.objects.filter(is_active=True).count()
+            cache.set(key, active_mailings_count)
     else:
-        active_mail_count = Mail.objects.filter(is_active=True).count()
-    return active_mail_count
+        active_mailings_count = Mail.objects.filter(is_active=True).count()
+    return active_mailings_count

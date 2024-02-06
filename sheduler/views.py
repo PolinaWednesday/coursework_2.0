@@ -1,3 +1,4 @@
+from django.shortcuts import render
 import random
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin, PermissionRequiredMixin
 from django.urls import reverse_lazy, reverse
@@ -5,8 +6,10 @@ from django.views.generic import CreateView, ListView, DetailView, UpdateView, D
 from blog.models import Blog
 from sheduler.forms import MailForm, MessageForm, ClientForm, MailModeratorForm
 from sheduler.models import Message, Mail, Client, Logs
-from sheduler.services import get_cache_for_mail, get_cache_for_active_mail
+from sheduler.services import get_cache_for_mailings, get_cache_for_active_mailings
 
+
+# Create your views here.
 
 class MailCreateView(LoginRequiredMixin, CreateView):
     model = Mail
@@ -23,9 +26,9 @@ class MailCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form, *args, **kwargs):
         if form.is_valid():
-            new_mail = form.save(commit=False)
-            new_mail.user = self.request.user
-            new_mail.save()
+            new_mailing = form.save(commit=False)
+            new_mailing.user = self.request.user
+            new_mailing.save()
         return super().form_valid(form)
 
 
@@ -49,7 +52,7 @@ class MailUpdateModeratorView(LoginRequiredMixin, PermissionRequiredMixin, Updat
     model = Mail
     form_class = MailModeratorForm
     success_url = reverse_lazy('sheduler:mail_list')
-    permission_required = 'sheduler.set_is_active'
+    permission_required = 'sheduler.set_is_activated'
 
 
 class MailListView(LoginRequiredMixin, ListView):
@@ -65,8 +68,8 @@ class HomeView(ListView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        context_data['mail_count'] = get_cache_for_mail()
-        context_data['active_mail_count'] = get_cache_for_active_mail()
+        context_data['mailings_count'] = get_cache_for_mailings()
+        context_data['active_mailings_count'] = get_cache_for_active_mailings()
         blog_list = list(Blog.objects.all())
         random.shuffle(blog_list)
         context_data['blog_list'] = blog_list[:3]
@@ -167,5 +170,3 @@ class ClientUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def test_func(self):
         return self.request.user == Client.objects.get(pk=self.kwargs['pk']).user
-
-
