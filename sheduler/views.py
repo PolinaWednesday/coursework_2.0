@@ -9,8 +9,6 @@ from sheduler.models import Message, Mail, Client, Logs
 from sheduler.services import get_cache_for_mailings, get_cache_for_active_mailings
 
 
-# Create your views here.
-
 class MailCreateView(LoginRequiredMixin, CreateView):
     model = Mail
     form_class = MailForm
@@ -64,7 +62,7 @@ class MailListView(LoginRequiredMixin, ListView):
 
 class HomeView(ListView):
     model = Mail
-    template_name = 'sendmail/home.html'
+    template_name = 'sheduler/home.html'
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
